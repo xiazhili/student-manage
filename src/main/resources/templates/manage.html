@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <!--<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>-->
+    <!--<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>-->
+    <!-- import Vue.js -->
+    <!--<script src="//vuejs.org/js/vue.min.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <!-- import stylesheet -->
+    <link rel="stylesheet" href="//unpkg.com/iview/dist/styles/iview.css"/>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- import iView -->
+    <script src="//unpkg.com/iview/dist/iview.min.js"></script>
+    <title>Title</title>
+</head>
+<body>
+<div id="app">
+    <div class="layout">
+        <sider :style="{position: 'fixed', height: '100vh', left: 0, overflow: 'auto'}">
+            <i-menu active-name="1-1" theme="dark" width="auto" :open-names="['1']" @on-select="handler">
+                <submenu name="1">
+                    <template slot="title">
+                        <icon type="ios-navigate"></icon>
+                        学生管理
+                    </template>
+                    <menu-item name="1-1">列表</menu-item>
+                    <menu-item name="1-2">添加</menu-item>
+                    <menu-item name="1-3">统计</menu-item>
+                    <!--<menu-item name="1-3">Option 3</menu-item>-->
+                </submenu>
+
+            </i-menu>
+        </sider>
+        <layout :style="{marginLeft: '200px'}">
+            <i-header :style="{background: '#fff', boxShadow: '0 2px 3px 2px rgba(0,0,0,.1)'}">
+                <h1>hello world</h1>
+
+            </i-header>
+            <i-content :style="{padding: '0 16px 16px'}">
+
+                <div style="margin-top: 20px" v-show="listshow">
+                    <row :gutter="5">
+                        <i-col span="3">
+                            <card style="margin-top: 5px">
+                                <!--<h1>hello</h1>-->
+                                <div>
+                                    <i-select v-model="model1" style="">
+                                        <i-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                                    </i-select>
+                                </div>
+                                <div style="margin-top: 20px">
+                                    <i-select v-model="model1" style="">
+                                        <i-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                                    </i-select>
+                                </div>
+
+                            </card>
+
+                        </i-col>
+                        <i-col span="21">
+                            <row :gutter="5">
+                                <i-col span="8" v-for=" item in data6">
+                                    <card style="margin-top: 5px">
+                                        <row>
+                                            <i-col span="8">
+                                                <div align="center">
+                                                    <avatar icon="person" size="large" />
+                                                </div>
+                                                <div align="center">
+                                                    <h3>name</h3>
+                                                    <p>class</p>
+                                                    <p>Running the evict task with compensationTime 4ms</p>
+                                                    <div style="margin-top: 15px">
+                                                        <i-button type="primary" shape="circle" @click="show1">编辑</i-button>
+                                                    </div>
+
+                                                </div>
+
+                                            </i-col>
+                                            <i-col span="16">
+                                                <div>
+                                                    <canvas :id="item.name" ref="test2"></canvas>
+                                                </div>
+
+                                            </i-col>
+
+                                        </row>
+                                    </card>
+                                </i-col>
+
+                            </row>
+                            <row>
+                                <i-col>
+                                    <div align="center" style="margin-top: 15px">
+                                        <page :total="100" show-total></page>
+                                    </div>
+                                </i-col>
+                            </row>
+
+                        </i-col>
+                    </row>
+
+                </div>
+                <div style="margin-top: 20px" v-show="addstuden">
+                    <row :gutter="16">
+                        <i-col span="6">
+                            <card>
+                                <div style="">
+                                    <i-form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="0" label-position="top">
+                                        <form-item label="姓名" prop="name">
+                                            <i-input v-model="formValidate.name" placeholder="Enter your name"></i-input>
+                                        </form-item>
+
+                                        <div>
+                                            <row :gutter="10">
+                                                <i-col span="15">
+                                                    <form-item label="班级" prop="mail">
+                                                        <cascader :data="data" change-on-select v-model="formValidate.mail" trigger="hover" @on-change="hah"></cascader>
+                                                    </form-item>
+                                                </i-col>
+                                                <i-col span="6">
+                                                    <form-item label="年龄" prop="age">
+                                                        <input-number :max="120" :min="6" v-model="formValidate.age"></input-number>
+                                                    </form-item>
+                                                </i-col>
+                                            </row>
+                                        </div>
+
+                                        <form-item label="家乡" prop="city">
+                                            <i-select v-model="formValidate.city" placeholder="请选择出生地">
+                                                <i-option value="beijing">木叶忍者村</i-option>
+                                                <i-option value="shanghai">远得要死王国</i-option>
+                                                <i-option value="shenzhen">浣熊市</i-option>
+                                            </i-select>
+                                        </form-item>
+
+                                        <form-item label="性别" prop="gender">
+                                            <radio-group v-model="formValidate.gender">
+                                                <radio label="male">男孩</radio>
+                                                <radio label="female">女孩</radio>
+                                            </radio-group>
+                                        </form-item>
+                                        <form-item label="爱好" prop="interest">
+                                            <checkbox-group v-model="formValidate.interest">
+                                                <checkbox label="Dota2"></checkbox>
+                                                <checkbox label="上课睡觉"></checkbox>
+                                                <checkbox label="上课不睡觉"></checkbox>
+                                                <checkbox label="不上课"></checkbox>
+                                            </checkbox-group>
+                                        </form-item>
+                                        <form-item label="自我介绍" prop="">
+                                            <i-input v-model="formValidate.desc" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></i-input>
+                                        </form-item>
+                                        <form-item>
+                                            <i-button type="primary" @click="handleSubmit('formValidate')">Submit</i-button>
+                                            <i-button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px">Reset</i-button>
+                                        </form-item>
+                                    </i-form>
+                                </div>
+                            </card>
+                        </i-col>
+                        <i-col span="18">
+                            <card>
+                                <div>
+                                    <i-table border :columns="columns7" :data="data6"></i-table>
+                                </div>
+                            </card>
+                        </i-col>
+                    </row>
+                </div>
+
+                <div v-show="tongji" style="margin-top: 20px">
+                    <row :gutter="10">
+                        <i-col span="11">
+                            <card>
+                                <div>
+                                    <canvas id="myChart"></canvas>
+                                </div>
+                            </card>
+                        </i-col>
+                        <i-col span="12">
+                            <row :gutter="10">
+                                <i-col span="12">
+                                    <card>
+                                        <div>
+                                            <!--<i-table border :columns="columns7" :data="data6"></i-table>-->
+                                            <canvas id="myChart1"></canvas>
+                                        </div>
+                                    </card>
+                                </i-col>
+                                <i-col span="12">
+                                    <div>
+                                        <card>
+                                            <canvas id="myChart2" ref="test1"></canvas>
+                                        </card>
+                                        <!--<i-table border :columns="columns7" :data="data6"></i-table>-->
+
+                                    </div>
+                                </i-col>
+                            </row>
+                            <row>
+                                <i-col>
+                                    <div>
+                                        <!--<i-button type="primary" @click="show1">Primary</i-button>-->
+                                    </div>
+                                </i-col>
+                            </row>
+
+                        </i-col>
+                    </row>
+
+                </div>
+
+            </i-content>
+        </layout>
+    </div>
+</div>
+</body>
+<script>
+
+
+
+    var Main = {
+        data () {
+            return {
+                addstuden: false,
+                tongji: false,
+                listshow: true,
+                chartData: [12, 19, 3, 5, 2, 3],
+                cityList: [
+                    {
+                        value: 'New York',
+                        label: 'New York'
+                    },
+                    {
+                        value: 'London',
+                        label: 'London'
+                    },
+                    {
+                        value: 'Sydney',
+                        label: 'Sydney'
+                    },
+                    {
+                        value: 'Ottawa',
+                        label: 'Ottawa'
+                    },
+                    {
+                        value: 'Paris',
+                        label: 'Paris'
+                    },
+                    {
+                        value: 'Canberra',
+                        label: 'Canberra'
+                    }
+                ],
+                model1: '',
+                data: [{
+                    value: 'beijing',
+                    label: '一年级',
+                    children: [
+                        {
+                            value: 'gugong',
+                            label: '一班',
+                            children: [
+                                {
+                                    value: 'fuzimiao',
+                                    label: '班长',
+                                },
+                                {
+                                    value: 'fuzimiao',
+                                    label: '组长',
+                                },
+                                {
+                                    value: 'fuzimiao',
+                                    label: '学霸',
+                                },
+                                {
+                                    value: 'fuzimiao',
+                                    label: '学渣',
+                                },
+                                {
+                                    value: 'fuzimiao',
+                                    label: '平民',
+                                }
+                            ]
+                        },
+                        {
+                            value: 'tiantan',
+                            label: '二班',
+                            children: [
+                                {
+                                    value: 'fuzimiao',
+                                    label: '班长',
+                                },
+                                {
+                                    value: 'fuzimiao',
+                                    label: '组长',
+                                },
+                                {
+                                    value: 'fuzimiao',
+                                    label: '学霸',
+                                },
+                                {
+                                    value: 'fuzimiao',
+                                    label: '学渣',
+                                },
+                                {
+                                    value: 'fuzimiao',
+                                    label: '平民',
+                                }
+                            ]
+                        },
+                        {
+                            value: 'wangfujing',
+                            label: '三班',
+                            children: [
+                                {
+                                    value: 'fuzimiao',
+                                    label: '班长',
+                                },
+                                {
+                                    value: 'fuzimiao',
+                                    label: '组长',
+                                },
+                                {
+                                    value: 'fuzimiao',
+                                    label: '学霸',
+                                },
+                                {
+                                    value: 'fuzimiao',
+                                    label: '学渣',
+                                },
+                                {
+                                    value: 'fuzimiao',
+                                    label: '平民',
+                                }
+                            ]
+                        }
+                    ]
+                }, {
+                    value: 'jiangsu',
+                    label: '二年级',
+                    children: [
+                        {
+                            value: 'nanjing',
+                            label: '一班',
+
+                        },
+                        {
+                            value: 'suzhou',
+                            label: '二班',
+
+                        }
+                    ],
+                }],
+                columns7: [
+                    {
+                        title: '姓名',
+                        key: 'name',
+                        render: (h, params) => {
+                        return h('div', [
+                            h('Icon', {
+                                props: {
+                                    type: 'person'
+                                }
+                            }),
+                            h('strong', params.row.name)
+                        ]);
+        }
+        },
+            {
+                title: '年龄',
+                    key: 'age'
+            },
+            {
+                title: '家乡',
+                    key: 'home'
+            },
+            {
+                title: '性别',
+                    key: 'sex'
+            },
+            {
+                title: 'Address',
+                    key: 'address'
+            },
+            {
+                title: 'Action',
+                    key: 'action',
+                width: 150,
+                align: 'center',
+                render: (h, params) => {
+                return h('div', [
+                    h('Button', {
+                        props: {
+                            type: 'primary',
+                            size: 'small'
+                        },
+                        style: {
+                            marginRight: '5px'
+                        },
+                        on: {
+                            click: () => {
+                            this.show1(params.index)
+                    }
+            }
+            }, 'View'),
+                h('Button', {
+                    props: {
+                        type: 'error',
+                        size: 'small'
+                    },
+                    on: {
+                        click: () => {
+                        this.remove(params.index)
+                }
+            }
+            }, 'Delete')
+            ]);
+            }
+            }
+        ],
+            data6: [
+                {
+                    name: 'John Brown',
+                    age: 18,
+                    address: 'New York No. 1 Lake Park'
+                },
+                {
+                    name: 'Jim Green',
+                    age: 24,
+                    address: 'London No. 1 Lake Park'
+                },
+                {
+                    name: 'Joe Black',
+                    age: 30,
+                    address: 'Sydney No. 1 Lake Park'
+                },
+                {
+                    name: 'Jon Snow',
+                    age: 26,
+                    address: 'Ottawa No. 2 Lake Park'
+                },
+                {
+                    name: 'Jon Snow1',
+                    age: 26,
+                    address: 'Ottawa No. 2 Lake Park'
+                },
+                {
+                    name: 'Jon Snow2',
+                    age: 26,
+                    address: 'Ottawa No. 2 Lake Park'
+                }
+            ],
+                formValidate: {
+                name: '',
+                    mail: [],
+                    city: '',
+                    gender: '',
+                    interest: [],
+                    date: '',
+                    age: 6,
+                    desc: ''
+            },
+            ruleValidate: {
+                name: [
+                    { required: true, message: '姓名不能为空', trigger: 'blur' }
+                ],
+                    mail: [
+                    { required: true, type: 'array', message: '班级不能为空', trigger: 'change' },
+                    { type: 'array', message: 'Incorrect email format', trigger: 'change' }
+                ],
+                    city: [
+                    { required: true, message: '家乡不能为空', trigger: 'change' }
+                ],
+                    gender: [
+                    { required: true, message: '我相信你一定有个性别', trigger: 'change' }
+                ],
+                    interest: [
+                    { required: true, type: 'array', min: 1, message: '请至少选一个Dota2', trigger: 'change' },
+                    { type: 'array', max: 2, message: '只能选两个，谢谢合作', trigger: 'change' }
+                ],
+                    age: [
+                    { required: true, type: 'number', message: 'Please', trigger: 'change' }
+                ],
+                    time: [
+                    { required: true, type: 'string', message: 'Please select time', trigger: 'change' }
+                ],
+                    desc: [
+                    { required: true, message: 'Please enter a personal introduction', trigger: 'blur' },
+                    { type: 'string', min: 20, message: 'Introduce no less than 20 words', trigger: 'blur' }
+                ]
+            }
+        }
+        },
+        mounted: function() {
+
+            var ctx1 = document.getElementById('myChart1').getContext('2d');
+            var chart1 = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: [
+                        'Red',
+                        'Yellow',
+                        'Blue',
+                        'dda',
+                        'dasdsd',
+                        'dss'
+                    ],
+                    datasets: [{
+                        data: [10, 20, 30, 68,33],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                    },]
+                },
+            });
+
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var chart = new Chart(ctx, {
+                // The type of chart we want to create
+                type: 'bar',
+                data: {
+                    labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+                    datasets: [{
+                        label: '# of Votes',
+                        data: [12, 19, 3, 5, 2, 3],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255,99,132,1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero:true
+                            }
+                        }]
+                    }
+                }
+            });
+            for (var i=0;i<this.data6.length;i++) {
+                // console.log()
+                var ctx2 = document.getElementById(this.data6[i].name).getContext('2d');
+                var chart2 = new Chart(ctx2, {
+                    // The type of chart we want to create
+                    type: 'radar',
+                    data: {
+                        labels: ['语文', '数学', '英语', '物理', '化学'],
+                        datasets: [{
+                            label: '能力值',
+                            data: [67, 88, 34, 99, 79],
+                            backgroundColor: [
+                                // 'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                // 'rgba(255,99,132,1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+
+                });
+            }
+
+
+        },
+        methods: {
+            handleSubmit (name) {
+                this.$refs[name].validate((valid) => {
+                    if (valid) {
+                        this.data6.push({
+                            name: this.formValidate.name,
+                            age: this.formValidate.age,
+                            address: this.formValidate.interest
+                        },);
+                        axios.get('/test/ha')
+                            .then(function (response) {
+                                console.log(response);
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                        this.$Message.success('Success!');
+                    } else {
+                        this.$Message.error('Fail!');
+            }
+            })
+            },
+            handleReset (name) {
+                this.$refs[name].resetFields();
+            },
+            remove (index) {
+                this.data6.splice(index, 1);
+            },
+            hah (value , selectedData) {
+                // console.log(value);
+                console.log(selectedData)
+            },
+            show1 () {
+                // alert("hello")
+                // var ctx2 = document.getElementById("myChart2").getContext('2d');
+                var ctx2 = this.$refs.test2;
+                var chart2 = new Chart(ctx2, {
+                    // The type of chart we want to create
+                    type: 'radar',
+                    data: {
+                        labels: ['语文', '数学', '英语', '物理', '化学'],
+                        datasets: [{
+                            label: '能力值',
+                            data: [33,12,99,44,66],
+                            backgroundColor: [
+                                // 'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                // 'rgba(255,99,132,1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+
+                });
+            },
+            handler (name) {
+
+                if (name == "1-2") {
+                    this.addstuden = true;
+                    this.tongji = false;
+                    this.listshow = false;
+                } else if (name == "1-1") {
+                    this.addstuden = false;
+                    this.tongji = false;
+                    this.listshow = true;
+                } else if (name = "1-3") {
+                    var ctx2 = document.getElementById("myChart2").getContext('2d');
+                    var chart2 = new Chart(ctx2, {
+                        // The type of chart we want to create
+                        type: 'radar',
+                        data: {
+                            labels: ['语文', '数学', '英语', '物理', '化学'],
+                            datasets: [{
+                                label: '能力值',
+                                data: this.chartData,
+                                backgroundColor: [
+                                    // 'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(255, 159, 64, 0.2)'
+                                ],
+                                borderColor: [
+                                    // 'rgba(255,99,132,1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(255, 159, 64, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+
+                    });
+                    this.listshow = false;
+                    this.addstuden = false;
+                    this.tongji = true;
+                }
+            }
+
+
+        }
+    }
+
+    var Component = Vue.extend(Main)
+    new Component().$mount('#app')
+</script>
+
+</html>
