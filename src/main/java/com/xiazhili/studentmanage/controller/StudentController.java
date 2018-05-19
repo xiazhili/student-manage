@@ -17,9 +17,10 @@ public class StudentController {
         return studentService.list(page);
     }
 
-    @PutMapping("/insert")
+    @PostMapping("/insert")
     public Object insert(@RequestBody Student student){
-        studentService.insert(student);
+        System.out.println(student);
+//        studentService.insert(student);
         return null;
     }
 

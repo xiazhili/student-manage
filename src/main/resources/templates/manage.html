@@ -134,7 +134,7 @@
                                             </row>
                                         </div>
 
-                                        <form-item label="家乡" prop="city">
+                                        <form-item label="城市" prop="city">
                                             <i-select v-model="formValidate.city" placeholder="请选择出生地">
                                                 <i-option value="beijing">木叶忍者村</i-option>
                                                 <i-option value="shanghai">远得要死王国</i-option>
@@ -144,18 +144,18 @@
 
                                         <form-item label="性别" prop="gender">
                                             <radio-group v-model="formValidate.gender">
-                                                <radio label="male">男孩</radio>
-                                                <radio label="female">女孩</radio>
+                                                <radio label="男孩">男孩</radio>
+                                                <radio label="女孩">女孩</radio>
                                             </radio-group>
                                         </form-item>
-                                        <form-item label="爱好" prop="interest">
+                                        <form-item label="兴趣" prop="interest">
                                             <checkbox-group v-model="formValidate.interest">
                                                 <checkbox label="电影"></checkbox>
                                                 <checkbox label="动漫"></checkbox>
                                                 <checkbox label="篮球"></checkbox>
                                                 <checkbox label="卡牌"></checkbox>
                                                 <checkbox label="游戏"></checkbox>
-                                                <checkbox label="看书"></checkbox>
+                                                <checkbox label="书籍"></checkbox>
                                             </checkbox-group>
                                         </form-item>
                                         <form-item label="个人简介" prop="">
@@ -383,7 +383,7 @@
                     key: 'age'
             },
             {
-                title: '家乡',
+                title: '城市',
                     key: 'home'
             },
             {
@@ -648,7 +648,7 @@
                             age: this.formValidate.age,
                             address: this.formValidate.interest
                         },);
-                        axios.get('/test/ha')
+                        axios.post('/student/insert',this.formValidate)
                             .then(function (response) {
                                 console.log(response);
                             })
