@@ -3,6 +3,7 @@ package com.xiazhili.studentmanage.bean;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.Arrays;
 
 @Entity
 @Table(name = "xzl_student")
@@ -17,13 +18,19 @@ public class Student {
     private String name;
 
     @Column
-    private String sex;
+    private String gender;
 
     @Column
-    private String home;
+    private int age;
 
     @Column
-    private String introduce;
+    private String city;
+
+    @Column
+    private String desc;
+
+    @Column
+    private String[] interest;
 
     public String getId() {
         return id;
@@ -41,27 +48,56 @@ public class Student {
         this.name = name;
     }
 
-    public String getSex() {
-        return sex;
+    public String getGender() {
+        return gender;
     }
 
-    public void setSex(String sex) {
-        this.sex = sex;
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
-    public String getHome() {
-        return home;
+    public String getCity() {
+        return city;
     }
 
-    public void setHome(String home) {
-        this.home = home;
+    public void setCity(String city) {
+        this.city = city;
     }
 
-    public String getIntroduce() {
-        return introduce;
+    public String getDesc() {
+        return desc;
     }
 
-    public void setIntroduce(String introduce) {
-        this.introduce = introduce;
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String[] getInterest() {
+        return interest;
+    }
+
+    public void setInterest(String[] interest) {
+        this.interest = interest;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", gender='" + gender + '\'' +
+                ", age=" + age +
+                ", city='" + city + '\'' +
+                ", desc='" + desc + '\'' +
+                ", interest=" + Arrays.toString(interest) +
+                '}';
     }
 }
