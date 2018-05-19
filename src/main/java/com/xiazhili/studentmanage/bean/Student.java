@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "xzl_student")
-public class Student {
+public class gitStudent {
 
     @Id
     @GeneratedValue(generator = "uuid2")
