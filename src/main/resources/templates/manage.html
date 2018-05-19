@@ -19,6 +19,12 @@
 <div id="app">
     <div class="layout">
         <sider :style="{position: 'fixed', height: '100vh', left: 0, overflow: 'auto'}">
+            <div style="margin-top: 20px" align="center">
+                <avatar icon="person" size="large" />
+            </div>
+            <div align="center" style="margin-bottom: 20px">
+                <h3 style="color: white">教师</h3>
+            </div>
             <i-menu active-name="1-1" theme="dark" width="auto" :open-names="['1']" @on-select="handler">
                 <submenu name="1">
                     <template slot="title">
@@ -69,7 +75,7 @@
                                                     <avatar icon="person" size="large" />
                                                 </div>
                                                 <div align="center">
-                                                    <h3>name</h3>
+                                                    <h3>{{item.name}}</h3>
                                                     <p>class</p>
                                                     <p>Running the evict task with compensationTime 4ms</p>
                                                     <div style="margin-top: 15px">
@@ -117,7 +123,7 @@
                                             <row :gutter="10">
                                                 <i-col span="15">
                                                     <form-item label="班级" prop="mail">
-                                                        <cascader :data="data" change-on-select v-model="formValidate.mail" trigger="hover" @on-change="hah"></cascader>
+                                                        <cascader :data="data" change-on-select v-model="formValidate.mail" @on-change="hah"></cascader>
                                                     </form-item>
                                                 </i-col>
                                                 <i-col span="6">
@@ -144,13 +150,15 @@
                                         </form-item>
                                         <form-item label="爱好" prop="interest">
                                             <checkbox-group v-model="formValidate.interest">
-                                                <checkbox label="Dota2"></checkbox>
-                                                <checkbox label="上课睡觉"></checkbox>
-                                                <checkbox label="上课不睡觉"></checkbox>
-                                                <checkbox label="不上课"></checkbox>
+                                                <checkbox label="电影"></checkbox>
+                                                <checkbox label="动漫"></checkbox>
+                                                <checkbox label="篮球"></checkbox>
+                                                <checkbox label="卡牌"></checkbox>
+                                                <checkbox label="游戏"></checkbox>
+                                                <checkbox label="看书"></checkbox>
                                             </checkbox-group>
                                         </form-item>
-                                        <form-item label="自我介绍" prop="">
+                                        <form-item label="个人简介" prop="">
                                             <i-input v-model="formValidate.desc" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></i-input>
                                         </form-item>
                                         <form-item>
@@ -383,8 +391,42 @@
                     key: 'sex'
             },
             {
-                title: 'Address',
-                    key: 'address'
+                title: '爱好',
+                    key: 'address',
+                render: (h, params) => {
+                    console.log(params.row.address)
+                const row = params.row;
+                const color = row.status === 1 ? 'blue' : row.status === 2 ? 'green' : 'red';
+                const text = row.status === 1 ? 'Working' : row.status === 2 ? 'Success' : 'Fail';
+                if (params.row.address.length == 2){
+                    return h('div', [
+                        h('Tag', {
+                            props: {
+                                type: '',
+                                color: color
+                            }
+                        }, params.row.address[0]),
+                        h('Tag', {
+                            props: {
+                                type: '',
+                                color: color
+                            }
+                        }, params.row.address[1]),
+                    ]);
+                } else {
+                    return h('div', [
+                        h('Tag', {
+                            props: {
+                                type: '',
+                                color: color
+                            }
+                        }, params.row.address[0]),
+
+                    ]);
+                }
+
+
+            }
             },
             {
                 title: 'Action',
