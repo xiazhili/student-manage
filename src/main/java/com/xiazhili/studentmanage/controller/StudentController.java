@@ -15,12 +15,13 @@ public class StudentController {
     @GetMapping("/list")
     public Object list(Integer page){
         return studentService.list(page);
+
     }
 
     @PostMapping("/insert")
     public Object insert(@RequestBody Student student){
         System.out.println(student);
-//        studentService.insert(student);
+        studentService.insert(student);
         return null;
     }
 
