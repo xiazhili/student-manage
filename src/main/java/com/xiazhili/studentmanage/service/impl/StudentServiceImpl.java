@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class StudentServiceImpl implements StudentService {
     @Autowired
@@ -16,6 +18,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Page<Student> list(Integer page) {
         return studentRepository.findAll(new PageRequest(page - 1, 6));
+
     }
 
     @Override
@@ -31,5 +34,13 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void delete(String id) {
         studentRepository.delete(id);
+    }
+
+    @Override
+    public Integer statistics() {
+        List<Student> studentList = studentRepository.findAll();
+        System.out.println(studentList);
+//        studentList.stream().
+        return null;
     }
 }

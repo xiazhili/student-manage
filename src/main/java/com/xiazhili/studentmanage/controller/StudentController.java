@@ -14,6 +14,7 @@ public class StudentController {
 
     @GetMapping("/list")
     public Object list(Integer page){
+        System.out.println(page);
         return studentService.list(page);
 
     }
@@ -28,13 +29,13 @@ public class StudentController {
     @PutMapping("/update")
     public Object update(@RequestBody Student student){
         studentService.update(student);
-        return null;
+        return studentService.list(1);
     }
 
     @DeleteMapping("/delete")
     public Object delete(String id){
         System.out.println(id);
-//        studentService.delete(id);
-        return null;
+        studentService.delete(id);
+        return studentService.list(1);
     }
 }

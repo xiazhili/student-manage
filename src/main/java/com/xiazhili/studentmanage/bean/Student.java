@@ -4,6 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Arrays;
+import java.util.Set;
 
 @Entity
 @Table(name = "xzl_student")
@@ -31,6 +32,18 @@ public class Student {
 
     @Column
     private String[] interest;
+    @Column
+    private String grade;
+    @Column
+    private String classes;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "stu_id")
+    private Set<Score> score;
+
+    @Column
+    private final boolean modal = false;
+
 
     public String getId() {
         return id;
@@ -88,6 +101,35 @@ public class Student {
         this.interest = interest;
     }
 
+    public String getGrade() {
+        return grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
+    public String getClasses() {
+
+        return classes;
+    }
+
+    public void setClasses(String classes) {
+        this.classes = classes;
+    }
+
+    public Set<Score> getScore() {
+        return score;
+    }
+
+    public void setScore(Set<Score> score) {
+        this.score = score;
+    }
+
+    public boolean isModal() {
+        return modal;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
@@ -98,6 +140,9 @@ public class Student {
                 ", city='" + city + '\'' +
                 ", desc='" + desc + '\'' +
                 ", interest=" + Arrays.toString(interest) +
+                ", grade='" + grade + '\'' +
+                ", classes='" + classes + '\'' +
+                ", score=" + score +
                 '}';
     }
 }
