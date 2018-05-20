@@ -317,11 +317,11 @@
                 ],
                 model1: '',
                 data: [{
-                    value: 'beijing',
+                    value: '一年级',
                     label: '一年级',
                     children: [
                         {
-                            value: 'gugong',
+                            value: '一班',
                             label: '一班',
                             children: [
                                 {
@@ -347,7 +347,7 @@
                             ]
                         },
                         {
-                            value: 'tiantan',
+                            value: '二班',
                             label: '二班',
                             children: [
                                 {
@@ -373,7 +373,7 @@
                             ]
                         },
                         {
-                            value: 'wangfujing',
+                            value: '三班',
                             label: '三班',
                             children: [
                                 {
@@ -400,16 +400,16 @@
                         }
                     ]
                 }, {
-                    value: 'jiangsu',
+                    value: '二年级',
                     label: '二年级',
                     children: [
                         {
-                            value: 'nanjing',
+                            value: '一班',
                             label: '一班',
 
                         },
                         {
-                            value: 'suzhou',
+                            value: '二班',
                             label: '二班',
 
                         }
@@ -556,7 +556,9 @@
                     interest: [],
                     date: '',
                     age: 6,
-                    desc: ''
+                    desc: '',
+                    classes: '',
+                    grade: '',
             },
             ruleValidate: {
                 name: [
@@ -744,8 +746,13 @@
                 // this.data6.splice(index, 1);
             },
             hah (value , selectedData) {
-                // console.log(value);
-                console.log(selectedData)
+                console.log(value);
+                if (value.length == 1) {
+                    this.formValidate.grade = value[0]
+                } else if (value.length == 2) {
+                    this.formValidate.classes = value[1]
+                }
+                // console.log(selectedData)
             },
             show1 () {
                 // alert("hello")
