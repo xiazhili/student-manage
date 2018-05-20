@@ -18,7 +18,7 @@ public class Score {
     private String subject;
 
     @Column
-    private double score;
+    private Integer score;
 
     @Column
     private LocalDate year;
@@ -40,11 +40,11 @@ public class Score {
         this.subject = subject;
     }
 
-    public double getScore() {
+    public Integer getScore() {
         return score;
     }
 
-    public void setScore(double score) {
+    public void setScore(Integer score) {
         this.score = score;
     }
 
@@ -54,5 +54,15 @@ public class Score {
 
     public void setYear(LocalDate year) {
         this.year = year;
+    }
+
+    @Override
+    public String toString() {
+        return "Score{" +
+                "id='" + id + '\'' +
+                ", subject='" + subject + '\'' +
+                ", score=" + score +
+                ", year=" + year +
+                '}';
     }
 }

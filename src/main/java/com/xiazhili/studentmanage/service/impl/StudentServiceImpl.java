@@ -6,6 +6,7 @@ import com.xiazhili.studentmanage.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,7 +41,12 @@ public class StudentServiceImpl implements StudentService {
     public Integer statistics() {
         List<Student> studentList = studentRepository.findAll();
         System.out.println(studentList);
-//        studentList.stream().
+//        studentList.stream().filter(student -> student.getGrade() ).mapToDouble()
         return null;
+    }
+
+    @Override
+    public Object listByClassesAndGrade(String classes, String grade,Integer page) {
+        return studentRepository.findByClassesAndGrade(classes,grade,new PageRequest(page - 1,6));
     }
 }

@@ -1,6 +1,10 @@
 package com.xiazhili.studentmanage.service;
 
 import com.xiazhili.studentmanage.bean.Student;
+import org.springframework.data.domain.Pageable;
+import sun.jvm.hotspot.debugger.Page;
+
+import java.util.List;
 
 public interface StudentService {
     /**
@@ -33,6 +37,8 @@ public interface StudentService {
      * @return
      */
     public Integer statistics();
+
+    public Object listByClassesAndGrade(String classes, String grade,Integer page);
 
 
 }
