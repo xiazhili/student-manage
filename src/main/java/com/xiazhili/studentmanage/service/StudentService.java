@@ -28,5 +28,11 @@ public interface StudentService {
      */
     public void delete(String id);
 
+    /**
+     * 统计
+     * @return
+     */
+    public Integer statistics();
+
 
 }

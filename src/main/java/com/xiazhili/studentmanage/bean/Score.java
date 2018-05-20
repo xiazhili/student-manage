@@ -23,6 +23,7 @@ public class Score {
     @Column
     private LocalDate year;
 
+
     public String getId() {
         return id;
     }

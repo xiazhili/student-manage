@@ -8,7 +8,7 @@ spring:
     platform: h2
     url: jdbc:h2:mem:xzl_manageSystem
 #    driver-class-name: org.h2.Driver
-    schema: classpath:schema.sql
+#    schema: classpath:schema.sql
   h2:
     console:
       enabled: true
