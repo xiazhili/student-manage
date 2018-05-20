@@ -87,7 +87,7 @@
                                             </i-col>
                                             <i-col span="16">
                                                 <div>
-                                                    <canvas :id="item.name" ref="test2"></canvas>
+                                                    <canvas :id="item.name"></canvas>
                                                 </div>
 
                                             </i-col>
@@ -516,38 +516,7 @@
             }
             }
         ],
-            data6: [
-                {
-                    name: 'John Brown',
-                    age: 18,
-                    address: 'New York No. 1 Lake Park'
-                },
-                {
-                    name: 'Jim Green',
-                    age: 24,
-                    address: 'London No. 1 Lake Park'
-                },
-                {
-                    name: 'Joe Black',
-                    age: 30,
-                    address: 'Sydney No. 1 Lake Park'
-                },
-                {
-                    name: 'Jon Snow',
-                    age: 26,
-                    address: 'Ottawa No. 2 Lake Park'
-                },
-                {
-                    name: 'Jon Snow1',
-                    age: 26,
-                    address: 'Ottawa No. 2 Lake Park'
-                },
-                {
-                    name: 'Jon Snow2',
-                    age: 26,
-                    address: 'Ottawa No. 2 Lake Park'
-                }
-            ],
+            data6: [],
                 formValidate: {
                 name: '',
                     mail: [],
@@ -591,6 +560,20 @@
             }
         }
         },
+        // beforeMount: function () {
+        //     var _this = this;
+        //     axios.get('/student/list',{ params : {
+        //             page : 1
+        //         }})
+        //         .then(function (value) {
+        //             // console.log(value)
+        //             _this.data6 = value.data.content ;
+        //
+        //         })
+        //         .catch(function (reason) {
+        //
+        //         })
+        // },
         mounted: function() {
 
             var _this = this;
@@ -598,8 +581,10 @@
                 page : 1
                 }})
                 .then(function (value) {
-                    console.log(value)
+                    // console.log(value)
                     _this.data6 = value.data.content ;
+                    _this.handleChart();
+
                 })
                 .catch(function (reason) {
 
@@ -669,55 +654,79 @@
                     }
                 }
             });
-            for (var i=0;i<this.data6.length;i++) {
-                // console.log()
-                var ctx2 = document.getElementById(this.data6[i].name).getContext('2d');
-                var chart2 = new Chart(ctx2, {
-                    // The type of chart we want to create
-                    type: 'radar',
-                    data: {
-                        labels: ['语文', '数学', '英语', '物理', '化学'],
-                        datasets: [{
-                            label: '能力值',
-                            data: [67, 88, 34, 99, 79],
-                            backgroundColor: [
-                                // 'rgba(255, 99, 132, 0.2)',
-                                'rgba(54, 162, 235, 0.2)',
-                                'rgba(255, 206, 86, 0.2)',
-                                'rgba(75, 192, 192, 0.2)',
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(255, 159, 64, 0.2)'
-                            ],
-                            borderColor: [
-                                // 'rgba(255,99,132,1)',
-                                'rgba(54, 162, 235, 1)',
-                                'rgba(255, 206, 86, 1)',
-                                'rgba(75, 192, 192, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(255, 159, 64, 1)'
-                            ],
-                            borderWidth: 1
-                        }]
-                    },
 
-                });
+
+
+
+        },
+        watch: {
+            data6: function () {
+                for (var i=0;i<this.data6.length;i++) {
+                    console.log("hello")
+                    console.log(this.data6[i])
+                    console.log(this.data6[i].name)
+
+                    var name1 = this.data6[i].name
+
+                    var ctx2 = document.getElementById(name1).getContext('2d')
+                    console.log(this.data6[i].name)
+                    console.log(this.data6[i].stats)
+                    var chart2 = new Chart(ctx2, {
+                        type: 'radar',
+                        data: {
+                            labels: ['语文', '数学', '英语', '物理', '化学'],
+                            datasets: [{
+                                label: '能力值',
+                                data: this.data6[i].stats,
+                                backgroundColor: [
+                                    'rgba(54, 162, 235, 0.2)',
+
+                                ],
+                                borderColor: [
+                                    'rgba(54, 162, 235, 1)',
+
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+
+                    });
+                }
             }
-
-
         },
         methods: {
             handleSubmit (name) {
                 var _this = this;
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        // this.data6.push({
-                        //     name: this.formValidate.name,
-                        //     age: this.formValidate.age,
-                        //     address: this.formValidate.interest
-                        // },);
                         axios.post('/student/insert',this.formValidate)
                             .then(function (response) {
                                 _this.data6 = response.data.content
+                                for (var i=0;i<_this.data6.length;i++) {
+                                    // console.log()
+
+                                    var ctx2 = document.getElementById(_this.data6[i].name).getContext('2d');
+                                    var chart2 = new Chart(ctx2, {
+                                        type: 'radar',
+                                        data: {
+                                            labels: ['语文', '数学', '英语', '物理', '化学'],
+                                            datasets: [{
+                                                label: '能力值',
+                                                data: _this.data6[i].stats,
+                                                backgroundColor: [
+                                                    'rgba(54, 162, 235, 0.2)',
+
+                                                ],
+                                                borderColor: [
+                                                    'rgba(54, 162, 235, 1)',
+
+                                                ],
+                                                borderWidth: 1
+                                            }]
+                                        },
+
+                                    });
+                                }
                                 console.log(response);
                             })
                             .catch(function (error) {
@@ -728,6 +737,39 @@
                         this.$Message.error('Fail!');
             }
             })
+            },
+            handleChart () {
+                console.log("zxzxzx")
+
+                for (var i=0;i<this.data6.length;i++) {
+                    console.log("hello")
+                    console.log(this.data6[i])
+                    console.log(this.data6[i].name)
+
+                    var ctx2 = document.getElementById(this.data6[i].name).getContext('2d');
+                    console.log(this.data6[i].name)
+                    console.log(this.data6[i].stats)
+                    var chart2 = new Chart(ctx2, {
+                        type: 'radar',
+                        data: {
+                            labels: ['语文', '数学', '英语', '物理', '化学'],
+                            datasets: [{
+                                label: '能力值',
+                                data: this.data6[i].stats,
+                                backgroundColor: [
+                                    'rgba(54, 162, 235, 0.2)',
+
+                                ],
+                                borderColor: [
+                                    'rgba(54, 162, 235, 1)',
+
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+
+                    });
+                }
             },
             handleReset (name) {
                 this.$refs[name].resetFields();

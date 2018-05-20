@@ -36,6 +36,16 @@ public class Student {
     private String grade;
     @Column
     private String classes;
+    @Column
+    private Integer[] stats = new Integer[] {0,0,0,0,0};
+
+    public Integer[] getStats() {
+        return stats;
+    }
+
+    public void setStats(Integer[] stats) {
+        this.stats = stats;
+    }
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "stu_id")
@@ -142,7 +152,9 @@ public class Student {
                 ", interest=" + Arrays.toString(interest) +
                 ", grade='" + grade + '\'' +
                 ", classes='" + classes + '\'' +
+                ", stats=" + Arrays.toString(stats) +
                 ", score=" + score +
+                ", modal=" + modal +
                 '}';
     }
 }
