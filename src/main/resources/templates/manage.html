@@ -136,9 +136,9 @@
 
                                         <form-item label="城市" prop="city">
                                             <i-select v-model="formValidate.city" placeholder="请选择出生地">
-                                                <i-option value="beijing">木叶忍者村</i-option>
-                                                <i-option value="shanghai">远得要死王国</i-option>
-                                                <i-option value="shenzhen">浣熊市</i-option>
+                                                <i-option value="木叶忍者村">木叶忍者村</i-option>
+                                                <i-option value="远得要死王国">远得要死王国</i-option>
+                                                <i-option value="浣熊市">浣熊市</i-option>
                                             </i-select>
                                         </form-item>
 
@@ -384,34 +384,34 @@
             },
             {
                 title: '城市',
-                    key: 'home'
+                    key: 'city'
             },
             {
                 title: '性别',
-                    key: 'sex'
+                    key: 'gender'
             },
             {
-                title: '爱好',
-                    key: 'address',
+                title: '兴趣',
+                    key: 'interest',
                 render: (h, params) => {
                     console.log(params.row.address)
                 const row = params.row;
                 const color = row.status === 1 ? 'blue' : row.status === 2 ? 'green' : 'red';
                 const text = row.status === 1 ? 'Working' : row.status === 2 ? 'Success' : 'Fail';
-                if (params.row.address.length == 2){
+                if (params.row.interest.length == 2){
                     return h('div', [
                         h('Tag', {
                             props: {
                                 type: '',
                                 color: color
                             }
-                        }, params.row.address[0]),
+                        }, params.row.interest[0]),
                         h('Tag', {
                             props: {
                                 type: '',
                                 color: color
                             }
-                        }, params.row.address[1]),
+                        }, params.row.interest[1]),
                     ]);
                 } else {
                     return h('div', [
@@ -420,7 +420,7 @@
                                 type: '',
                                 color: color
                             }
-                        }, params.row.address[0]),
+                        }, params.row.interest[0]),
 
                     ]);
                 }
@@ -456,7 +456,7 @@
                     },
                     on: {
                         click: () => {
-                        this.remove(params.index)
+                        this.remove(params.row.id)
                 }
             }
             }, 'Delete')
@@ -538,6 +538,18 @@
         }
         },
         mounted: function() {
+
+            var _this = this;
+            axios.get('/student/list',{ params : {
+                page : 1
+                }})
+                .then(function (value) {
+                    console.log(value)
+                    _this.data6 = value.data.content ;
+                })
+                .catch(function (reason) {
+
+                })
 
             var ctx1 = document.getElementById('myChart1').getContext('2d');
             var chart1 = new Chart(ctx1, {
@@ -641,15 +653,17 @@
         },
         methods: {
             handleSubmit (name) {
+                var _this = this;
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        this.data6.push({
-                            name: this.formValidate.name,
-                            age: this.formValidate.age,
-                            address: this.formValidate.interest
-                        },);
+                        // this.data6.push({
+                        //     name: this.formValidate.name,
+                        //     age: this.formValidate.age,
+                        //     address: this.formValidate.interest
+                        // },);
                         axios.post('/student/insert',this.formValidate)
                             .then(function (response) {
+                                _this.data6 = response.data.content
                                 console.log(response);
                             })
                             .catch(function (error) {
@@ -664,8 +678,17 @@
             handleReset (name) {
                 this.$refs[name].resetFields();
             },
-            remove (index) {
-                this.data6.splice(index, 1);
+            remove (id) {
+                axios.delete('/student/delete',{ params : {
+                    id : id
+                    }})
+                    .then(function (respone) {
+
+                    })
+                    .catch(function (error) {
+
+                    })
+                // this.data6.splice(index, 1);
             },
             hah (value , selectedData) {
                 // console.log(value);

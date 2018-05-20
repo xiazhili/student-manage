@@ -22,7 +22,7 @@ public class StudentController {
     public Object insert(@RequestBody Student student){
         System.out.println(student);
         studentService.insert(student);
-        return null;
+        return studentService.list(1);
     }
 
     @PutMapping("/update")
@@ -33,7 +33,8 @@ public class StudentController {
 
     @DeleteMapping("/delete")
     public Object delete(String id){
-        studentService.delete(id);
+        System.out.println(id);
+//        studentService.delete(id);
         return null;
     }
 }
