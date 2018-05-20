@@ -14,6 +14,7 @@ public class StudentController {
 
     @GetMapping("/list")
     public Object list(Integer page){
+        System.out.println(page);
         return studentService.list(page);
 
     }

@@ -4,10 +4,11 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Arrays;
+import java.util.Set;
 
 @Entity
 @Table(name = "xzl_student")
-public class gitStudent {
+public class Student {
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -31,6 +32,14 @@ public class gitStudent {
 
     @Column
     private String[] interest;
+    @Column
+    private String grade;
+
+    @OneToMany
+    @JoinColumn(name = "stu_id")
+    private Set<Score> score;
+
+
 
     public String getId() {
         return id;
@@ -87,6 +96,13 @@ public class gitStudent {
     public void setInterest(String[] interest) {
         this.interest = interest;
     }
+    public String getGrade() {
+        return grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
 
     @Override
     public String toString() {
@@ -98,6 +114,8 @@ public class gitStudent {
                 ", city='" + city + '\'' +
                 ", desc='" + desc + '\'' +
                 ", interest=" + Arrays.toString(interest) +
+                ", grade='" + grade + '\'' +
+                ", score=" + score +
                 '}';
     }
 }
