@@ -79,7 +79,7 @@
                                                     <p>class</p>
                                                     <p>Running the evict task with compensationTime 4ms</p>
                                                     <div style="margin-top: 15px">
-                                                        <i-button type="primary" shape="circle" @click="show1">编辑</i-button>
+                                                        <i-button type="primary" shape="circle" @click="item.modal = true">编辑</i-button>
                                                     </div>
 
                                                 </div>
@@ -224,6 +224,30 @@
             </i-content>
         </layout>
     </div>
+    <div>
+        <Modal
+                v-for = 'item in data6'
+                v-model="item.modal"
+                title="Common Modal dialog box title"
+                @on-ok="scoreSubmit(item)"
+                @on-cancel="">
+            <row :gutter="16">
+                <i-col span="8">
+                    <date-picker type="date" placeholder="Select date"></date-picker>
+                </i-col>
+                <i-col span="8">
+                    <i-select v-model="score[0].subject">
+                        <i-option v-for="item1 in subjectList" :value="item1.value" :key="item1.value">{{ item1.label }}</i-option>
+                    </i-select>
+                </i-col>
+                <i-col span="8">
+                    <input-number :max="100" :min="0" v-model="score[0].score"></input-number>
+                </i-col>
+            </row>
+
+
+        </Modal>
+    </div>
 </div>
 </body>
 <script>
@@ -236,7 +260,35 @@
                 addstuden: false,
                 tongji: false,
                 listshow: true,
+                score: [
+                    {
+                    subject: '',
+                    score: 0,
+                }
+                ],
                 chartData: [12, 19, 3, 5, 2, 3],
+                subjectList: [
+                    {
+                        value: '语文',
+                        label: '语文'
+                    },
+                    {
+                        value: '数学',
+                        label: '数学'
+                    },
+                    {
+                        value: '英语',
+                        label: '英语'
+                    },
+                    {
+                        value: '物理',
+                        label: '物理'
+                    },
+                    {
+                        value: '化学',
+                        label: '化学'
+                    },
+                ],
                 cityList: [
                     {
                         value: 'New York',
@@ -384,34 +436,34 @@
             },
             {
                 title: '城市',
-                    key: 'home'
+                    key: 'city'
             },
             {
                 title: '性别',
-                    key: 'sex'
+                    key: 'gender'
             },
             {
-                title: '爱好',
-                    key: 'address',
+                title: '兴趣',
+                    key: 'interest',
                 render: (h, params) => {
                     console.log(params.row.address)
                 const row = params.row;
                 const color = row.status === 1 ? 'blue' : row.status === 2 ? 'green' : 'red';
                 const text = row.status === 1 ? 'Working' : row.status === 2 ? 'Success' : 'Fail';
-                if (params.row.address.length == 2){
+                if (params.row.interest.length == 2){
                     return h('div', [
                         h('Tag', {
                             props: {
                                 type: '',
                                 color: color
                             }
-                        }, params.row.address[0]),
+                        }, params.row.interest[0]),
                         h('Tag', {
                             props: {
                                 type: '',
                                 color: color
                             }
-                        }, params.row.address[1]),
+                        }, params.row.interest[1]),
                     ]);
                 } else {
                     return h('div', [
@@ -420,7 +472,7 @@
                                 type: '',
                                 color: color
                             }
-                        }, params.row.address[0]),
+                        }, params.row.interest[0]),
 
                     ]);
                 }
@@ -456,7 +508,7 @@
                     },
                     on: {
                         click: () => {
-                        this.remove(params.index)
+                        this.remove(params.row.id)
                 }
             }
             }, 'Delete')
@@ -538,6 +590,18 @@
         }
         },
         mounted: function() {
+
+            var _this = this;
+            axios.get('/student/list',{ params : {
+                page : 1
+                }})
+                .then(function (value) {
+                    console.log(value)
+                    _this.data6 = value.data.content ;
+                })
+                .catch(function (reason) {
+
+                })
 
             var ctx1 = document.getElementById('myChart1').getContext('2d');
             var chart1 = new Chart(ctx1, {
@@ -641,15 +705,17 @@
         },
         methods: {
             handleSubmit (name) {
+                var _this = this;
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        this.data6.push({
-                            name: this.formValidate.name,
-                            age: this.formValidate.age,
-                            address: this.formValidate.interest
-                        },);
+                        // this.data6.push({
+                        //     name: this.formValidate.name,
+                        //     age: this.formValidate.age,
+                        //     address: this.formValidate.interest
+                        // },);
                         axios.post('/student/insert',this.formValidate)
                             .then(function (response) {
+                                _this.data6 = response.data.content
                                 console.log(response);
                             })
                             .catch(function (error) {
@@ -664,8 +730,18 @@
             handleReset (name) {
                 this.$refs[name].resetFields();
             },
-            remove (index) {
-                this.data6.splice(index, 1);
+            remove (id) {
+                var _this = this;
+                axios.delete('/student/delete',{ params : {
+                    id : id
+                    }})
+                    .then(function (respone) {
+                        _this.data6 = respone.data.content
+                    })
+                    .catch(function (error) {
+
+                    })
+                // this.data6.splice(index, 1);
             },
             hah (value , selectedData) {
                 // console.log(value);
@@ -704,6 +780,25 @@
                     },
 
                 });
+            },
+            scoreSubmit (item) {
+                var _this = this;
+                if (item.score != null) {
+                    item.score.push({
+                        subject: this.score[0].subject,
+                        score: this.score[0].score
+                    })
+                } else {
+                    item.score = this.score
+                }
+                console.log(item)
+                axios.put("/student/update",item)
+                    .then(function (value) {
+                        _this.data6 = value.data.content
+                    })
+                    .catch(function (reason) {
+
+                    })
             },
             handler (name) {
 

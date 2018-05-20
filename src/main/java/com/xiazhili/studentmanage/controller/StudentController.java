@@ -23,18 +23,19 @@ public class StudentController {
     public Object insert(@RequestBody Student student){
         System.out.println(student);
         studentService.insert(student);
-        return null;
+        return studentService.list(1);
     }
 
     @PutMapping("/update")
     public Object update(@RequestBody Student student){
         studentService.update(student);
-        return null;
+        return studentService.list(1);
     }
 
     @DeleteMapping("/delete")
     public Object delete(String id){
+        System.out.println(id);
         studentService.delete(id);
-        return null;
+        return studentService.list(1);
     }
 }

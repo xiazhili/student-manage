@@ -17,7 +17,8 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Page<Student> list(Integer page) {
-        return studentRepository.findAll(new PageRequest(page -1,6));
+        return studentRepository.findAll(new PageRequest(page - 1, 6));
+
     }
 
     @Override
