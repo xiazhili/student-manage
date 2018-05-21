@@ -21,8 +21,17 @@ public class Score {
     private Integer score;
 
     @Column
-    private LocalDate year;
+    private String year;
 
+    private String stu_id;
+
+    public String getStu_id() {
+        return stu_id;
+    }
+
+    public void setStu_id(String stu_id) {
+        this.stu_id = stu_id;
+    }
 
     public String getId() {
         return id;
@@ -48,11 +57,11 @@ public class Score {
         this.score = score;
     }
 
-    public LocalDate getYear() {
+    public String getYear() {
         return year;
     }
 
-    public void setYear(LocalDate year) {
+    public void setYear(String year) {
         this.year = year;
     }
 

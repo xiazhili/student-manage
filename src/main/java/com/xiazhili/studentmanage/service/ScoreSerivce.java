@@ -5,5 +5,7 @@ import org.springframework.data.domain.Page;
 
 public interface ScoreSerivce {
 
+    Page<Score> list(Integer page);
+
     Page<Score> test(Integer first, Integer last);
 }

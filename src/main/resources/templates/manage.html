@@ -25,15 +25,17 @@
             <div align="center" style="margin-bottom: 20px">
                 <h3 style="color: white">教师</h3>
             </div>
-            <i-menu active-name="1-1" theme="dark" width="auto" :open-names="['1']" @on-select="handler">
+            <i-menu theme="dark" width="auto" @on-select="handler">
                 <submenu name="1">
                     <template slot="title">
                         <icon type="ios-navigate"></icon>
                         学生管理
                     </template>
-                    <menu-item name="1-1">列表</menu-item>
-                    <menu-item name="1-2">添加</menu-item>
-                    <menu-item name="1-3">统计</menu-item>
+                    <!--<menu-item name="1-4">首页</menu-item>-->
+                    <menu-item name="1-1">学生概览</menu-item>
+                    <menu-item name="1-2">添加学生</menu-item>
+                    <menu-item name="1-3">统计图表</menu-item>
+                    <menu-item name="1-4">成绩列表</menu-item>
                     <!--<menu-item name="1-3">Option 3</menu-item>-->
                 </submenu>
 
@@ -45,27 +47,35 @@
 
             </i-header>
             <i-content :style="{padding: '0 16px 16px'}">
+                <div style="margin-top: 20px" v-show="firstpage" align="center">
+                    <row>
+                        <i-col span="24">
+                            <card>
+                                <h1>学生成绩管理系统</h1>
+                            </card>
+                        </i-col>
+                    </row>
+                </div>
 
                 <div style="margin-top: 20px" v-show="listshow">
                     <row :gutter="5">
-                        <i-col span="3">
-                            <card style="margin-top: 5px">
-                                <!--<h1>hello</h1>-->
-                                <div>
-                                    <i-select v-model="model1" style="">
-                                        <i-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                                    </i-select>
-                                </div>
-                                <div style="margin-top: 20px">
-                                    <i-select v-model="model1" style="">
-                                        <i-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                                    </i-select>
-                                </div>
+                        <!--<i-col span="3">-->
+                            <!--<card style="margin-top: 5px">-->
+                                <!--<div>-->
+                                    <!--<i-select v-model="model1" style="">-->
+                                        <!--<i-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</i-option>-->
+                                    <!--</i-select>-->
+                                <!--</div>-->
+                                <!--<div style="margin-top: 20px">-->
+                                    <!--<i-select v-model="model1" style="">-->
+                                        <!--<i-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</i-option>-->
+                                    <!--</i-select>-->
+                                <!--</div>-->
 
-                            </card>
+                            <!--</card>-->
 
-                        </i-col>
-                        <i-col span="21">
+                        <!--</i-col>-->
+                        <i-col span="24">
                             <row :gutter="5">
                                 <i-col span="8" v-for=" item in data6">
                                     <card style="margin-top: 5px">
@@ -79,7 +89,7 @@
                                                     <p>class</p>
                                                     <p>Running the evict task with compensationTime 4ms</p>
                                                     <div style="margin-top: 15px">
-                                                        <i-button type="primary" shape="circle" @click="item.modal = true">编辑</i-button>
+                                                        <i-button type="primary" shape="circle" @click="item.modal = true">添加成绩</i-button>
                                                     </div>
 
                                                 </div>
@@ -87,7 +97,7 @@
                                             </i-col>
                                             <i-col span="16">
                                                 <div>
-                                                    <canvas :id="item.name"></canvas>
+                                                    <canvas :id="item.id"></canvas>
                                                 </div>
 
                                             </i-col>
@@ -100,7 +110,7 @@
                             <row>
                                 <i-col>
                                     <div align="center" style="margin-top: 15px">
-                                        <page :total="100" show-total></page>
+                                        <page :total="totalElements" show-total :page-size="6" @on-change="pageSwith"></page>
                                     </div>
                                 </i-col>
                             </row>
@@ -220,6 +230,10 @@
                     </row>
 
                 </div>
+                <div style="margin-top: 20px" v-show="scoreList">
+                    <i-table border :columns="columns6" :data="data5"></i-table>
+
+                </div>
 
             </i-content>
         </layout>
@@ -233,7 +247,7 @@
                 @on-cancel="">
             <row :gutter="16">
                 <i-col span="8">
-                    <date-picker type="date" placeholder="Select date"></date-picker>
+                    <date-picker type="date" placeholder="Select date" type="year" v-model="score[0].year"></date-picker>
                 </i-col>
                 <i-col span="8">
                     <i-select v-model="score[0].subject">
@@ -252,21 +266,144 @@
 </body>
 <script>
 
+    // new Vue.component('my-checkbox', {
+    //     template: '<div class="checkbox-wrapper" @click="check"><div :class="{ checkbox: true, checked: checked }"></div><div class="title"></div></div>',
+    //     data() {
+    //         return {
+    //             checked: false, title: 'Check me'
+    //         }
+    //         },
+    //     methods: {
+    //         check() {
+    //             this.checked = !this.checked;
+    //         }
+    //     }
+    // });
+
 
 
     var Main = {
+        components:{
+            'mycomponent': {
+                template: '<div>children component!</div>',
+                props: {
+                    row: Object
+                }
+            }
+        },
         data () {
             return {
+                totalElements: 0,
+                firstpage: true,
                 addstuden: false,
                 tongji: false,
-                listshow: true,
+                listshow: false,
+                scoreList: false,
                 score: [
                     {
+                    year: '',
                     subject: '',
                     score: 0,
                 }
                 ],
-                chartData: [12, 19, 3, 5, 2, 3],
+                data5: [
+                    {
+                        name: 'John Brown',
+                        age: 18,
+                        address: '数学',
+                        date: '2016-10-03'
+                    },
+                    {
+                        name: 'Jim Green',
+                        age: 24,
+                        address: '数学',
+                        date: '2016-10-01',
+
+                    },
+                    {
+                        name: 'Joe Black',
+                        age: 30,
+                        address: '语文',
+                        date: '2016-10-02'
+                    },
+                    {
+                        name: 'Jon Snow',
+                        age: 26,
+                        address: '英语',
+                        date: '2016-10-04'
+                    }
+                ],
+                columns6: [
+
+                    {
+                        title: '年份',
+                        key: 'year'
+                    },
+                    {
+                        title: '年级',
+                        key: 'grade'
+                    },
+                    {
+                        title: '班级',
+                        key: 'classes'
+                    },
+                    {
+                        title: '姓名',
+                        key: 'name'
+                    },
+                    {
+                        title: '分数',
+                        key: 'score',
+                        filters: [
+                            {
+                                label: '0 - 60',
+                                value: 1
+                            },
+                            {
+                                label: '60 - 70',
+                                value: 2
+                            }
+                        ],
+                        filterMultiple: false,
+                        filterMethod (value, row) {
+                            if (value === 1) {
+                                return 60 > row.score > 0;
+                            } else if (value === 2) {
+                                return 60 < row.score < 70;
+                            }
+                        }
+                    },
+                    {
+                        title: '科目',
+                        key: 'subject',
+                        filters: [
+                            {
+                                label: '语文',
+                                value: '语文'
+                            },
+                            {
+                                label: '数学',
+                                value: '数学'
+                            },
+                            {
+                                label: '英语',
+                                value: '英语'
+                            },
+                            {
+                                label: '物理',
+                                value: '物理'
+                            },
+                            {
+                                label: '化学',
+                                value: '化学'
+                            },
+                        ],
+                        filterMethod (value, row) {
+                            return row.subject.indexOf(value) > -1;
+                        }
+                    }
+                ],
+                chartData: [0, 0, 0, 0, 0],
                 subjectList: [
                     {
                         value: '语文',
@@ -323,80 +460,17 @@
                         {
                             value: '一班',
                             label: '一班',
-                            children: [
-                                {
-                                    value: 'fuzimiao',
-                                    label: '班长',
-                                },
-                                {
-                                    value: 'fuzimiao',
-                                    label: '组长',
-                                },
-                                {
-                                    value: 'fuzimiao',
-                                    label: '学霸',
-                                },
-                                {
-                                    value: 'fuzimiao',
-                                    label: '学渣',
-                                },
-                                {
-                                    value: 'fuzimiao',
-                                    label: '平民',
-                                }
-                            ]
+
                         },
                         {
                             value: '二班',
                             label: '二班',
-                            children: [
-                                {
-                                    value: 'fuzimiao',
-                                    label: '班长',
-                                },
-                                {
-                                    value: 'fuzimiao',
-                                    label: '组长',
-                                },
-                                {
-                                    value: 'fuzimiao',
-                                    label: '学霸',
-                                },
-                                {
-                                    value: 'fuzimiao',
-                                    label: '学渣',
-                                },
-                                {
-                                    value: 'fuzimiao',
-                                    label: '平民',
-                                }
-                            ]
+
                         },
                         {
                             value: '三班',
                             label: '三班',
-                            children: [
-                                {
-                                    value: 'fuzimiao',
-                                    label: '班长',
-                                },
-                                {
-                                    value: 'fuzimiao',
-                                    label: '组长',
-                                },
-                                {
-                                    value: 'fuzimiao',
-                                    label: '学霸',
-                                },
-                                {
-                                    value: 'fuzimiao',
-                                    label: '学渣',
-                                },
-                                {
-                                    value: 'fuzimiao',
-                                    label: '平民',
-                                }
-                            ]
+
                         }
                     ]
                 }, {
@@ -411,6 +485,11 @@
                         {
                             value: '二班',
                             label: '二班',
+
+                        },
+                        {
+                            value: '三班',
+                            label: '三班',
 
                         }
                     ],
@@ -448,8 +527,8 @@
                 render: (h, params) => {
                     console.log(params.row.address)
                 const row = params.row;
-                const color = row.status === 1 ? 'blue' : row.status === 2 ? 'green' : 'red';
-                const text = row.status === 1 ? 'Working' : row.status === 2 ? 'Success' : 'Fail';
+                const color = row.status === 1 ? 'blue' : row.status === 2 ? 'green' : 'green';
+                // const text = row.status === 1 ? 'Working' : row.status === 2 ? 'Success' : 'Fail';
                 if (params.row.interest.length == 2){
                     return h('div', [
                         h('Tag', {
@@ -560,20 +639,6 @@
             }
         }
         },
-        // beforeMount: function () {
-        //     var _this = this;
-        //     axios.get('/student/list',{ params : {
-        //             page : 1
-        //         }})
-        //         .then(function (value) {
-        //             // console.log(value)
-        //             _this.data6 = value.data.content ;
-        //
-        //         })
-        //         .catch(function (reason) {
-        //
-        //         })
-        // },
         mounted: function() {
 
             var _this = this;
@@ -581,118 +646,16 @@
                 page : 1
                 }})
                 .then(function (value) {
-                    // console.log(value)
+                    console.log(value)
                     _this.data6 = value.data.content ;
-                    _this.handleChart();
+                    _this.totalElements = value.data.totalElements;
 
                 })
                 .catch(function (reason) {
 
                 })
 
-            var ctx1 = document.getElementById('myChart1').getContext('2d');
-            var chart1 = new Chart(ctx1, {
-                type: 'doughnut',
-                data: {
-                    labels: [
-                        'Red',
-                        'Yellow',
-                        'Blue',
-                        'dda',
-                        'dasdsd',
-                        'dss'
-                    ],
-                    datasets: [{
-                        data: [10, 20, 30, 68,33],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
-                        ],
-                    },]
-                },
-            });
 
-            var ctx = document.getElementById('myChart').getContext('2d');
-            var chart = new Chart(ctx, {
-                // The type of chart we want to create
-                type: 'bar',
-                data: {
-                    labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-                    datasets: [{
-                        label: '# of Votes',
-                        data: [12, 19, 3, 5, 2, 3],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(255,99,132,1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero:true
-                            }
-                        }]
-                    }
-                }
-            });
-
-
-
-
-        },
-        watch: {
-            data6: function () {
-                for (var i=0;i<this.data6.length;i++) {
-                    console.log("hello")
-                    console.log(this.data6[i])
-                    console.log(this.data6[i].name)
-
-                    var name1 = this.data6[i].name
-
-                    var ctx2 = document.getElementById(name1).getContext('2d')
-                    console.log(this.data6[i].name)
-                    console.log(this.data6[i].stats)
-                    var chart2 = new Chart(ctx2, {
-                        type: 'radar',
-                        data: {
-                            labels: ['语文', '数学', '英语', '物理', '化学'],
-                            datasets: [{
-                                label: '能力值',
-                                data: this.data6[i].stats,
-                                backgroundColor: [
-                                    'rgba(54, 162, 235, 0.2)',
-
-                                ],
-                                borderColor: [
-                                    'rgba(54, 162, 235, 1)',
-
-                                ],
-                                borderWidth: 1
-                            }]
-                        },
-
-                    });
-                }
-            }
         },
         methods: {
             handleSubmit (name) {
@@ -702,31 +665,7 @@
                         axios.post('/student/insert',this.formValidate)
                             .then(function (response) {
                                 _this.data6 = response.data.content
-                                for (var i=0;i<_this.data6.length;i++) {
-                                    // console.log()
-
-                                    var ctx2 = document.getElementById(_this.data6[i].name).getContext('2d');
-                                    var chart2 = new Chart(ctx2, {
-                                        type: 'radar',
-                                        data: {
-                                            labels: ['语文', '数学', '英语', '物理', '化学'],
-                                            datasets: [{
-                                                label: '能力值',
-                                                data: _this.data6[i].stats,
-                                                backgroundColor: [
-                                                    'rgba(54, 162, 235, 0.2)',
-
-                                                ],
-                                                borderColor: [
-                                                    'rgba(54, 162, 235, 1)',
-
-                                                ],
-                                                borderWidth: 1
-                                            }]
-                                        },
-
-                                    });
-                                }
+                                _this.totalElements = response.data.totalElements
                                 console.log(response);
                             })
                             .catch(function (error) {
@@ -738,39 +677,7 @@
             }
             })
             },
-            handleChart () {
-                console.log("zxzxzx")
 
-                for (var i=0;i<this.data6.length;i++) {
-                    console.log("hello")
-                    console.log(this.data6[i])
-                    console.log(this.data6[i].name)
-
-                    var ctx2 = document.getElementById(this.data6[i].name).getContext('2d');
-                    console.log(this.data6[i].name)
-                    console.log(this.data6[i].stats)
-                    var chart2 = new Chart(ctx2, {
-                        type: 'radar',
-                        data: {
-                            labels: ['语文', '数学', '英语', '物理', '化学'],
-                            datasets: [{
-                                label: '能力值',
-                                data: this.data6[i].stats,
-                                backgroundColor: [
-                                    'rgba(54, 162, 235, 0.2)',
-
-                                ],
-                                borderColor: [
-                                    'rgba(54, 162, 235, 1)',
-
-                                ],
-                                borderWidth: 1
-                            }]
-                        },
-
-                    });
-                }
-            },
             handleReset (name) {
                 this.$refs[name].resetFields();
             },
@@ -781,6 +688,7 @@
                     }})
                     .then(function (respone) {
                         _this.data6 = respone.data.content
+                        _this.totalElements = response.data.totalElements
                     })
                     .catch(function (error) {
 
@@ -849,17 +757,129 @@
 
                     })
             },
-            handler (name) {
+            pageSwith (index) {
+                var _this = this
+                axios.get("/student/list",{params:{
+                    page: index
+                    }})
+                    .then(function (value) {
+                        _this.data6 = value.data.content
+                        _this.handler("1-1")
+                        console.log(value)
+                    })
+                    .catch(function (reason) {
 
+                    })
+                console.log(index)
+
+            },
+            handler (name) {
+                // console.log(name)
+                var _this = this
                 if (name == "1-2") {
+                    this.firstpage = false;
                     this.addstuden = true;
                     this.tongji = false;
                     this.listshow = false;
+                    this.scoreList = false;
                 } else if (name == "1-1") {
+
+                    for (var i=0;i<this.data6.length;i++) {
+                        // console.log()
+
+                        var ctx2 = document.getElementById(this.data6[i].id).getContext('2d');
+                        var chart2 = new Chart(ctx2, {
+                            type: 'radar',
+                            data: {
+                                labels: ['语文', '数学', '英语', '物理', '化学'],
+                                datasets: [{
+                                    label: '能力值',
+                                    data: this.data6[i].stats,
+                                    backgroundColor: [
+                                        'rgba(54, 162, 235, 0.2)',
+
+                                    ],
+                                    borderColor: [
+                                        'rgba(54, 162, 235, 1)',
+
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+
+                        });
+                    }
+                    this.firstpage = false;
                     this.addstuden = false;
                     this.tongji = false;
+                    this.scoreList = false;
                     this.listshow = true;
-                } else if (name = "1-3") {
+                } else if (name == "1-3") {
+                    console.log(" in 1-3")
+                    var ctx = document.getElementById('myChart').getContext('2d');
+                    var chart = new Chart(ctx, {
+                        // The type of chart we want to create
+                        type: 'bar',
+                        data: {
+                            labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+                            datasets: [{
+                                label: '# of Votes',
+                                data: [12, 19, 3, 5, 2, 3],
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(255, 159, 64, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(255,99,132,1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(255, 159, 64, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero:true
+                                    }
+                                }]
+                            }
+                        }
+                    });
+
+                    var ctx1 = document.getElementById('myChart1').getContext('2d');
+                    var chart1 = new Chart(ctx1, {
+                        type: 'doughnut',
+                        data: {
+                            labels: [
+                                '0-60人数',
+                                '60-70人数',
+                                '70-80人数',
+                                '80-90人数',
+                                '90-100人数',
+                            ],
+                            datasets: [{
+                                data: [1, 1, 1, 1,1],
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(255, 159, 64, 0.2)'
+                                ],
+                            },]
+                        },
+                    });
+
                     var ctx2 = document.getElementById("myChart2").getContext('2d');
                     var chart2 = new Chart(ctx2, {
                         // The type of chart we want to create
@@ -890,9 +910,28 @@
                         },
 
                     });
+                    this.firstpage = false;
                     this.listshow = false;
                     this.addstuden = false;
                     this.tongji = true;
+                    this.scoreList = false;
+                } else if (name == "1-4") {
+
+                    axios.get('/score/list',{params:{
+                        page:1
+                        }})
+                        .then(function (value) {
+                            _this.data5 = value.data.content
+                        })
+                        .catch(function (reason) {
+
+                        })
+                    console.log("in 1-4")
+                    this.firstpage = false;
+                    this.listshow = false;
+                    this.addstuden = false;
+                    this.tongji = false;
+                    this.scoreList = true;
                 }
             }
 
