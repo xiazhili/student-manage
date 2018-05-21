@@ -14,8 +14,15 @@ public class ScoreController {
     private ScoreSerivce scoreSerivce;
 
     @GetMapping("/test")
-    public Object test(Integer first,Integer last) {
+    public Object test(Integer first, Integer last) {
         scoreSerivce.test(first, last);
         return "success";
     }
+
+    @GetMapping("/list")
+    public Object list(Integer page) {
+
+        return scoreSerivce.list(page);
+    }
+
 }

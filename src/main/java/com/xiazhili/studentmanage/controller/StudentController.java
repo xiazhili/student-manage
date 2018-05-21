@@ -4,6 +4,7 @@ import com.xiazhili.studentmanage.bean.Score;
 import com.xiazhili.studentmanage.bean.Student;
 import com.xiazhili.studentmanage.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
@@ -55,7 +56,7 @@ public class StudentController {
                     .collect(Collectors.averagingInt(item -> item.getScore()));
             student.getStats()[4] = (int) d;
         }
-        System.out.println(student);
+//        System.out.println(student);
         studentService.update(student);
         return studentService.list(1);
     }
@@ -65,5 +66,11 @@ public class StudentController {
         System.out.println(id);
         studentService.delete(id);
         return studentService.list(1);
+    }
+
+    @GetMapping("/classesList")
+    public Object classesList(String grade, String classes, Integer page) {
+
+        return studentService.listByClassesAndGrade(classes, grade, page);
     }
 }

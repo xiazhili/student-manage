@@ -15,6 +15,12 @@ public class ScoreServiceImpl implements ScoreSerivce {
     private ScoreRepository scoreRepository;
 
     @Override
+    public Page<Score> list(Integer page) {
+
+        return scoreRepository.findAll(new PageRequest(page - 1, 10));
+    }
+
+    @Override
     public Page<Score> test(Integer first, Integer last) {
         System.out.println(scoreRepository.findAllByScoreBetween(first, last));
         return null;

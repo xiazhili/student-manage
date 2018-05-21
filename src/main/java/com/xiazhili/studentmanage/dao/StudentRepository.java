@@ -10,6 +10,7 @@ public interface StudentRepository extends JpaRepository<Student, String> ,JpaSp
 
     Page<Student> findByClassesAndGrade(String classes, String grade, Pageable pageable);
 
+
 //    Page findByClassesAndGrade(String classes,String grade);
 
 }
